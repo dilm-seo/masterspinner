@@ -78,6 +78,30 @@ const createSpinPrompt = (content: string, language: string): string => {
     ${content}`;
 };
 
+export const generateAnchorTexts = async (url: string, language: string): Promise<string[]> => {
+  if (!openaiInstance) throw new Error('OpenAI not initialized');
+
+  const prompt = `Generate 5 natural, SEO-friendly anchor text variations in ${language} for the following URL: ${url}
+    Consider:
+    - Include both branded and non-branded variations
+    - Use a mix of exact match and partial match keywords
+    - Keep them natural and contextual
+    - Avoid overly promotional language
+    - Each anchor text should be 2-5 words long
+    - All text must be in ${language}
+    
+    Return only the anchor texts, one per line.`;
+
+  const response = await openaiInstance.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.7,
+  });
+
+  const content = response.choices[0].message.content || '';
+  return content.split('\n').filter(text => text.trim()).slice(0, 5);
+};
+
 export const generateArticle = async ({ 
   keyword, 
   wordCount, 
