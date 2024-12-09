@@ -14,10 +14,16 @@ export default function Button({
   className = '',
   ...props 
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-colors duration-200';
+  const baseStyles = `inline-flex items-center px-4 py-2 rounded-lg font-medium
+    transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`;
+    
   const variants = {
-    primary: 'border-transparent text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500',
-    secondary: 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-blue-500'
+    primary: `bg-cyan-500 text-white hover:bg-cyan-400
+      shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_20px_rgba(34,211,238,0.5)]
+      border border-cyan-400/20`,
+    secondary: `bg-gray-800 text-cyan-400 hover:bg-gray-700
+      shadow-[0_0_10px_rgba(34,211,238,0.15)] hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]
+      border border-cyan-500/20`
   };
 
   return (

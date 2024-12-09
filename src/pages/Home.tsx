@@ -7,6 +7,7 @@ import { Settings, Article, BacklinkConfig } from '../types';
 import BacklinkForm from '../components/BacklinkForm';
 import Button from '../components/Button';
 import Card from '../components/Card';
+import Preloader from '../components/Preloader';
 
 export default function Home() {
   const [keyword, setKeyword] = useState('');
@@ -58,6 +59,7 @@ export default function Home() {
         masterSpin,
         wordCount
       });
+      toast.success('Article generated successfully!');
     } catch (error) {
       toast.error('Error generating article');
       console.error(error);
@@ -88,98 +90,104 @@ export default function Home() {
   const language = settings ? (JSON.parse(settings) as Settings).language : 'en';
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="max-w-2xl mx-auto">
-        <Card>
-          <h1 className="text-3xl font-bold mb-8 text-gray-900">Blog Article Generator</h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Keyword</label>
-              <input
-                type="text"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Enter your keyword..."
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Word Count</label>
-              <input
-                type="number"
-                value={wordCount}
-                onChange={handleWordCountChange}
-                min="100"
-                max="3000"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                required
-              />
-              <p className="mt-1 text-sm text-gray-500">Min: 100, Max: 3000 words</p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center">
+    <>
+      {loading && <Preloader />}
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="max-w-2xl mx-auto">
+          <Card>
+            <h1 className="text-3xl font-bold mb-8 text-cyan-400 animate-glow">
+              Blog Article Generator
+            </h1>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">Keyword</label>
                 <input
-                  type="checkbox"
-                  id="useBacklink"
-                  checked={useBacklink}
-                  onChange={(e) => setUseBacklink(e.target.checked)}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  type="text"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  className="w-full"
+                  placeholder="Enter your keyword..."
+                  required
                 />
-                <label htmlFor="useBacklink" className="ml-2 text-sm font-medium text-gray-700">
-                  Include Backlink
-                </label>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">Word Count</label>
+                <input
+                  type="number"
+                  value={wordCount}
+                  onChange={handleWordCountChange}
+                  min="100"
+                  max="3000"
+                  className="w-full"
+                  required
+                />
+                <p className="mt-1 text-sm text-gray-400">Min: 100, Max: 3000 words</p>
               </div>
 
-              {useBacklink && (
-                <BacklinkForm 
-                  backlink={backlink} 
-                  setBacklink={setBacklink}
-                  language={language}
-                />
-              )}
-            </div>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="useBacklink"
+                    checked={useBacklink}
+                    onChange={(e) => setUseBacklink(e.target.checked)}
+                    className="rounded border-gray-700 text-cyan-500 focus:ring-cyan-500"
+                  />
+                  <label htmlFor="useBacklink" className="ml-2 text-sm font-medium">
+                    Include Backlink
+                  </label>
+                </div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              icon={Wand2}
-            >
-              {loading ? 'Generating...' : 'Generate Article'}
-            </Button>
-          </form>
-        </Card>
-      </div>
+                {useBacklink && (
+                  <BacklinkForm 
+                    backlink={backlink} 
+                    setBacklink={setBacklink}
+                    language={language}
+                  />
+                )}
+              </div>
 
-      {article && (
-        <div className="max-w-4xl mx-auto mt-8 space-y-8">
-          <Card>
-            <h2 className="text-2xl font-bold mb-4 text-gray-900">Original Article</h2>
-            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: article.originalContent }} />
-          </Card>
-
-          <Card>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">Master Spin Version</h2>
               <Button
-                type="button"
-                variant="secondary"
-                icon={copied ? Check : Copy}
-                onClick={copyToClipboard}
+                type="submit"
+                disabled={loading}
+                icon={Wand2}
               >
-                {copied ? 'Copied!' : 'Copy'}
+                {loading ? 'Generating...' : 'Generate Article'}
               </Button>
-            </div>
-            <div className="prose max-w-none">
-              <pre className="whitespace-pre-wrap text-sm font-mono bg-gray-50 p-4 rounded-lg overflow-auto border border-gray-200">
-                {article.masterSpin}
-              </pre>
-            </div>
+            </form>
           </Card>
         </div>
-      )}
-    </div>
+
+        {article && (
+          <div className="max-w-4xl mx-auto space-y-8">
+            <Card>
+              <h2 className="text-2xl font-bold mb-4 text-cyan-400">Original Article</h2>
+              <div className="prose max-w-none" 
+                dangerouslySetInnerHTML={{ __html: article.originalContent }} />
+            </Card>
+
+            <Card>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold text-cyan-400">Master Spin Version</h2>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  icon={copied ? Check : Copy}
+                  onClick={copyToClipboard}
+                >
+                  {copied ? 'Copied!' : 'Copy'}
+                </Button>
+              </div>
+              <div className="prose max-w-none">
+                <pre className="whitespace-pre-wrap text-sm font-mono">
+                  {article.masterSpin}
+                </pre>
+              </div>
+            </Card>
+          </div>
+        )}
+      </div>
+    </>
   );
 }

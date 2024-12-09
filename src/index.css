@@ -1,3 +1,44 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-gray-100 bg-gray-900;
+  }
+  
+  input, select, textarea {
+    @apply bg-gray-800 border-gray-700 text-gray-100 rounded-lg
+      focus:ring-cyan-500 focus:border-cyan-500
+      placeholder:text-gray-500;
+  }
+
+  label {
+    @apply text-gray-300;
+  }
+
+  pre {
+    @apply bg-gray-800/50 border border-cyan-500/20
+      shadow-[0_0_10px_rgba(34,211,238,0.1)];
+  }
+}
+
+.prose {
+  @apply text-gray-300;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  @apply text-cyan-400 font-bold;
+}
+
+.prose a {
+  @apply text-cyan-400 hover:text-cyan-300 transition-colors duration-300;
+}
+
+.prose ul {
+  @apply list-disc list-inside;
+}
+
+.prose ol {
+  @apply list-decimal list-inside;
+}
